@@ -31,6 +31,12 @@ export default function Sidebar({ user, onNavigate, onLogout, currentScreen }) {
         >
           INTELIGENCIA (THE BRAIN)
         </div>
+        <div 
+          className={`nav-item ${currentScreen === 'TICKETS' ? 'active' : ''}`} 
+          onClick={() => onNavigate('TICKETS')}
+        >
+          SOPORTE (TICKETS)
+        </div>
       </nav>
       <div className="user-section">
         <p className="user-name">{user?.username}</p>

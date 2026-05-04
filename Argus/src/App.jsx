@@ -5,7 +5,8 @@ import ClientesScreen from './pages/Clientes';
 import UsuariosScreen from './pages/GestionUsuarios';
 import IAAssistantScreen from './pages/IAAssistant';
 import Sidebar from './components/Sidebar';
-import ModalLegal from './components/ModalLegal'; // Asegúrate de crear este componente
+import ModalLegal from './components/ModalLegal'; 
+import TicketsScreen from './pages/Tickets';
 import './App.css';
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
               {currentScreen === 'CLIENTES' && <ClientesScreen user={userData} />}
               {currentScreen === 'USUARIOS' && <UsuariosScreen user={userData} />}
               {currentScreen === 'IA' && <IAAssistantScreen user={userData} />}
+              {currentScreen === 'TICKETS' && <TicketsScreen user={userData} />}
             </div>
 
             {/* --- PIE DE PÁGINA TÁCTICO (FOOTER) --- */}

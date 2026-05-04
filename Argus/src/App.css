@@ -892,3 +892,217 @@ body {
     padding: 8px 20px !important;
     width: auto !important;
 }
+/* --- ESTILOS PARA LA GESTIÓN DE TICKETS --- */
+
+/* Contenedor principal de la vista de tickets */
+.clientes-view {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Etiquetas de estado (estilo táctico) */
+.status-tag {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.status-tag.abierto {
+  background-color: rgba(220, 36, 48, 0.2);
+  color: #dc2430;
+  border: 1px solid #dc2430;
+}
+
+.status-tag.en.proceso, .status-tag.en-proceso {
+  background-color: rgba(243, 156, 18, 0.2);
+  color: #f39c12;
+  border: 1px solid #f39c12;
+}
+
+.status-tag.resuelto {
+  background-color: rgba(0, 255, 136, 0.15);
+  color: #00ff88;
+  border: 1px solid #00ff88;
+}
+
+/* Botón de refresco animado */
+.btn-refresh {
+  background: transparent;
+  color: #7b4397;
+  border: 1px solid #7b4397;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-refresh:hover {
+  background: #7b4397;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(123, 67, 151, 0.4);
+}
+
+.btn-refresh.spinning {
+  animation: spin 1s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Textarea y selects para el formulario de tickets */
+textarea.argus-input {
+  font-family: inherit;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+textarea.argus-input:focus {
+  border-color: #7b4397;
+}
+.tickets-custom-wrapper {
+    display: grid !important;
+    grid-template-columns: 320px 1fr !important;
+    gap: 24px !important;
+    align-items: start !important;
+    max-width: 100% !important;
+    margin-top: 10px !important;
+}
+
+.chat-historial {
+    background: #050505 !important;
+    border: 1px solid #1a1a1a !important;
+    border-radius: 4px !important;
+    padding: 12px !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
+    margin-bottom: 15px !important;
+}
+
+.chat-mensaje {
+    margin-bottom: 10px !important;
+    font-size: 0.75rem !important;
+}
+
+/* --- MEJORA VISUAL PARA EL CHAT DEL MODAL --- */
+
+/* Aumentamos la altura del contenedor del historial de mensajes */
+.chat-historial-ampliado {
+    max-height: 380px !important; /* Pasamos de 250px a 380px */
+    min-height: 250px !important;
+    background: #050505 !important;
+    border: 1px solid #1a1a1a !important;
+    border-radius: 4px !important;
+    padding: 15px !important;
+    overflow-y: auto !important;
+    margin-bottom: 20px !important;
+}
+
+/* Agrandamos el área de texto para que el usuario escriba más cómodo */
+.chat-textarea-ampliado {
+    height: 80px !important; /* Más alto */
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 0.8rem !important;
+    resize: none !important;
+    margin-bottom: 12px !important;
+}
+
+/* --- MEJORA VISUAL PARA EXPANDIR EL MODAL --- */
+
+/* Clase para el contenedor del modal en React (maxWidth ajustado) */
+.legal-modal-box {
+    padding: 30px 45px !important; /* Más espacio horizontal interno */
+    box-sizing: border-box !important;
+}
+
+/* Aumentamos la altura del contenedor del chat */
+.chat-historial-ampliado {
+    max-height: 400px !important; /* Ligeramente más alto para el nuevo ancho */
+    min-height: 250px !important;
+    background: #050505 !important;
+    border: 1px solid #1a1a1a !important;
+    border-radius: 4px !important;
+    padding: 20px !important; /* Más padding interno en el chat */
+    overflow-y: auto !important;
+    margin-bottom: 20px !important;
+    width: 100% !important; /* Asegurar que ocupe todo el ancho disponible */
+}
+
+/* Asegurar que las imágenes adjuntas se adapten al nuevo ancho sin desbordar */
+.chat-historial-ampliado img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 4px !important;
+    margin-top: 10px !important;
+}
+
+/* Agrandamos el área de texto */
+.chat-textarea-ampliado {
+    height: 90px !important; /* Un poco más alto */
+    width: 100% !important;
+    padding: 15px !important;
+    font-size: 0.85rem !important;
+    resize: none !important;
+    margin-bottom: 15px !important;
+}
+
+/* --- ESTIRAMIENTO HORIZONTAL DEL MODAL --- */
+
+.modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 10000 !important;
+}
+
+.legal-modal-box {
+    width: 95% !important; /* Estirado al 95% de la pantalla */
+    max-width: 1200px !important; /* Aumentado para mayor espacio horizontal */
+    background: #0a0a0c !important;
+    border: 2px solid #7b4397 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 0 25px rgba(123, 67, 151, 0.4) !important;
+    padding: 40px 60px !important;
+}
+
+/* El área del chat ahora se estira a lo ancho y aumenta la altura */
+.chat-historial-ampliado {
+    max-height: 450px !important;
+    min-height: 300px !important;
+    background: #030303 !important;
+    border: 1px solid #252525 !important;
+    border-radius: 6px !important;
+    padding: 25px !important;
+    overflow-y: auto !important;
+    margin-bottom: 25px !important;
+    width: 100% !important;
+}
+
+/* Los mensajes se acomodan horizontalmente */
+.chat-historial-ampliado img {
+    max-width: 65% !important; /* Las imágenes ya no ocupan toda la pantalla y no se estiran de más */
+    height: auto !important;
+    display: block !important;
+    margin-top: 12px !important;
+    border: 1px solid #3c1459 !important;
+    border-radius: 4px !important;
+}
