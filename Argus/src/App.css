@@ -1106,3 +1106,28 @@ textarea.argus-input:focus {
     border: 1px solid #3c1459 !important;
     border-radius: 4px !important;
 }
+/* --- ESTILOS DE ESTADO Y ALERTAS --- */
+
+.status-tag.resuelto {
+    background-color: #00ff88 !important;
+    color: #000 !important;
+    border: none;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+}
+
+.status-tag.pendiente {
+    background-color: #ffaa00 !important;
+    color: #000 !important;
+    border: none;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+}
