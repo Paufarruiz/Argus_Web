@@ -1,89 +1,97 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import styles from './Login.module.css'
-
-const EyeIcon = () => (
-  <svg className={styles.eye} viewBox="0 0 48 48" fill="none">
-    <circle cx="24" cy="24" r="22" stroke="rgba(0,200,150,0.3)" strokeWidth="1" />
-    <circle cx="24" cy="24" r="14" stroke="rgba(0,200,150,0.5)" strokeWidth="1" />
-    <circle cx="24" cy="24" r="7" fill="none" stroke="#00c896" strokeWidth="1.5" />
-    <circle cx="24" cy="24" r="3" fill="#00c896" />
-    <line x1="2"  y1="24" x2="10" y2="24" stroke="rgba(0,200,150,0.4)" strokeWidth="1" />
-    <line x1="38" y1="24" x2="46" y2="24" stroke="rgba(0,200,150,0.4)" strokeWidth="1" />
-    <line x1="24" y1="2"  x2="24" y2="10" stroke="rgba(0,200,150,0.4)" strokeWidth="1" />
-    <line x1="24" y1="38" x2="24" y2="46" stroke="rgba(0,200,150,0.4)" strokeWidth="1" />
-  </svg>
-)
+import React, { useState } from 'react';
 
 export default function Login({ onLogin }) {
-  const [user, setUser]   = useState('')
-  const [pass, setPass]   = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (!user || !pass) {
-      setError('Introduce tus credenciales de acceso.')
-      return
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    const payload = { 
+        username: username.trim(), 
+        password: password 
+    };
+
+    try {
+      const response = await fetch('http://localhost/api/Api_Argus.php?action=login', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        onLogin(data.user);
+      } else {
+        setError(data.message);
+      }
+    } catch (err) {
+      console.error("Error en la conexion:", err);
+      setError('Error crítico: Sin conexión con el nodo central');
     }
-    setLoading(true)
-    setError('')
-    // Simulated auth — replace with real API call
-    setTimeout(() => {
-      setLoading(false)
-      onLogin()
-      navigate('/dashboard')
-    }, 1200)
-  }
+  };
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.card}>
-        <div className={styles.logo}>
-          <EyeIcon />
-          <span className={styles.logoText}>ARGUS</span>
-          <span className={styles.logoSub}>Proactive Intelligence · Verified Exposure</span>
-        </div>
+    <div className="login-container">
+      <div className="login-box">
+        <h1>ARGUS</h1>
+        <p>Proactive Intelligence. Verified Exposure.</p>
 
-        <form onSubmit={handleSubmit} noValidate>
-          <div className={styles.field}>
-            <label htmlFor="user">Identificador de Operador</label>
-            <input
-              id="user"
-              type="text"
-              placeholder="operator@argus.sec"
-              value={user}
-              onChange={e => setUser(e.target.value)}
-              autoComplete="username"
+        {error && <div className="error-banner" style={{ marginBottom: '1rem', color: '#dc2430', fontSize: '0.8rem' }}>{error}</div>}
+
+        <form onSubmit={handleSubmit}>
+          <div className="input-group" style={{ position: 'relative' }}>
+            <input 
+              className="argus-input"
+              type="text" 
+              placeholder="USUARIO" 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
             />
           </div>
 
-          <div className={styles.field}>
-            <label htmlFor="pass">Clave de Acceso</label>
-            <input
-              id="pass"
-              type="password"
-              placeholder="••••••••••"
-              value={pass}
-              onChange={e => setPass(e.target.value)}
-              autoComplete="current-password"
+          <div className="input-group" style={{ position: 'relative' }}>
+            <input 
+              className="argus-input"
+              type={showPassword ? "text" : "password"} 
+              placeholder="CONTRASEÑA" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
+            <button 
+              type="button" 
+              className="btn-toggle-pass"
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '12px',
+                background: 'none',
+                border: 'none',
+                color: '#7b4397',
+                fontSize: '0.6rem',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "OCULTAR" : "VER"}
+            </button>
           </div>
 
-          {error && <p className={styles.error}>{error}</p>}
-
-          <button className={styles.btn} type="submit" disabled={loading}>
-            {loading ? 'AUTENTICANDO...' : 'INICIAR SESIÓN'}
+          <button type="submit" className="btn-login">
+            AUTENTICAR SISTEMA
           </button>
         </form>
-
-        <div className={styles.status}>
-          <span className={styles.dot} />
-          Sistema operativo · Tor activo · 3 scrapers en ejecución
-        </div>
       </div>
     </div>
-  )
+  );
 }
