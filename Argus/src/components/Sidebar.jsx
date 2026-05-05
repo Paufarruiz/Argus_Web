@@ -37,6 +37,12 @@ export default function Sidebar({ user, onNavigate, onLogout, currentScreen }) {
         >
           SOPORTE (TICKETS)
         </div>
+        <div 
+          className={`nav-item ${currentScreen === 'INFORME' ? 'active' : ''}`} 
+          onClick={() => onNavigate('INFORME')}
+        >
+          EXPORTAR INFORMES
+        </div>
       </nav>
       <div className="user-section">
         <p className="user-name">{user?.username}</p>

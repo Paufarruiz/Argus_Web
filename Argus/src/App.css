@@ -1131,3 +1131,20 @@ textarea.argus-input:focus {
     font-size: 0.65rem;
     text-transform: uppercase;
 }
+.status-tag.resuelto {
+    background-color: #00ff88 !important;
+    color: #000 !important;
+    border: none;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.status-tag.pendiente {
+    background-color: #ffaa00 !important;
+    color: #000 !important;
+    border: none;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
