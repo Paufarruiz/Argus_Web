@@ -1148,3 +1148,125 @@ textarea.argus-input:focus {
     border-radius: 4px;
     font-weight: bold;
 }
+/* Contenedor del botón hamburguesa */
+.menu-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001; /* Por encima del sidebar */
+  background: #7b4397;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+/* Ajustes del Sidebar */
+.sidebar {
+  width: 260px;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cuando está colapsado */
+.sidebar.collapsed {
+  width: 80px;
+}
+
+/* Ocultar textos cuando está colapsado */
+.sidebar.collapsed .nav-text,
+.sidebar.collapsed .user-name,
+.sidebar.collapsed .user-role,
+.sidebar.collapsed .sidebar-logo {
+  display: none;
+}
+
+/* Centrar iconos cuando está colapsado */
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 15px 0;
+}
+
+.sidebar.collapsed .nav-icon {
+  margin-right: 0;
+  font-size: 1.5rem;
+}
+
+/* Ajustar el contenido principal para que no se solape */
+.main-content {
+  margin-left: 0; /* Si usas position relative/flex no hace falta margin fijo */
+  transition: margin-left 0.3s ease;
+}
+
+/* Asegúrate de que los iconos tengan un espacio si el sidebar está abierto */
+.nav-icon {
+  margin-right: 15px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  white-space: nowrap; /* Evita que el texto salte de línea al encoger */
+}
+/* Cabecera que alinea logo y botón */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  min-height: 70px;
+}
+
+/* Botón de hamburguesa interno */
+.menu-toggle-internal {
+  background: transparent;
+  border: none;
+  color: #7b4397;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.menu-toggle-internal:hover {
+  color: #00ff88;
+}
+
+/* Cuando está colapsado, centramos el botón */
+.sidebar.collapsed .sidebar-header {
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 15px 0;
+}
+
+/* El logo ya no necesita position fixed ni nada que lo solape */
+.sidebar-logo {
+  margin: 0;
+  font-weight: bold;
+  color: #7b4397;
+  letter-spacing: 2px;
+}
+
+/* Asegurar que los iconos tengan un tamaño fijo para que no bailen */
+.nav-icon {
+  font-size: 1.2rem;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* Animación de apertura/cierre */
+.sidebar {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

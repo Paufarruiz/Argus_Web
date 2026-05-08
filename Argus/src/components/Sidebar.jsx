@@ -1,53 +1,86 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export default function Sidebar({ user, onNavigate, onLogout, currentScreen }) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
-    <aside className="sidebar">
-      <div className="sidebar-logo">ARGUS</div>
+    <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+      {/* Cabecera del Sidebar: Contiene el logo y el botón de colapsar */}
+      <div className="sidebar-header">
+        {!isCollapsed && <div className="sidebar-logo">ARGUS</div>}
+        <button className="menu-toggle-internal" onClick={toggleSidebar}>
+          {isCollapsed ? '☰' : '✕'}
+        </button>
+      </div>
+      
       <nav className="sidebar-nav">
         <div 
           className={`nav-item ${currentScreen === 'DASHBOARD' ? 'active' : ''}`} 
           onClick={() => onNavigate('DASHBOARD')}
+          title="Incidentes"
         >
-          INCIDENTES
+          <span className="nav-icon">📊</span>
+          {!isCollapsed && <span className="nav-text">INCIDENTES</span>}
         </div>
+
         <div 
           className={`nav-item ${currentScreen === 'CLIENTES' ? 'active' : ''}`} 
           onClick={() => onNavigate('CLIENTES')}
+          title="Gestión Clientes"
         >
-          GESTIÓN CLIENTES
+          <span className="nav-icon">📁</span>
+          {!isCollapsed && <span className="nav-text">GESTIÓN CLIENTES</span>}
         </div>
+
         {user?.role === 1 && (
           <div 
             className={`nav-item ${currentScreen === 'USUARIOS' ? 'active' : ''}`} 
             onClick={() => onNavigate('USUARIOS')}
+            title="Gestión Usuarios"
           >
-            GESTIÓN USUARIOS
+            <span className="nav-icon">👥</span>
+            {!isCollapsed && <span className="nav-text">GESTIÓN USUARIOS</span>}
           </div>
         )}
+
         <div 
           className={`nav-item ${currentScreen === 'IA' ? 'active' : ''}`} 
           onClick={() => onNavigate('IA')}
+          title="Inteligencia"
         >
-          INTELIGENCIA (THE BRAIN)
+          <span className="nav-icon">🧠</span>
+          {!isCollapsed && <span className="nav-text">INTELIGENCIA</span>}
         </div>
+
         <div 
           className={`nav-item ${currentScreen === 'TICKETS' ? 'active' : ''}`} 
           onClick={() => onNavigate('TICKETS')}
+          title="Soporte"
         >
-          SOPORTE (TICKETS)
+          <span className="nav-icon">🎫</span>
+          {!isCollapsed && <span className="nav-text">SOPORTE</span>}
         </div>
+
         <div 
           className={`nav-item ${currentScreen === 'INFORME' ? 'active' : ''}`} 
           onClick={() => onNavigate('INFORME')}
+          title="Exportar Informes"
         >
-          EXPORTAR INFORMES
+          <span className="nav-icon">📉</span>
+          {!isCollapsed && <span className="nav-text">EXPORTAR INFORMES</span>}
         </div>
       </nav>
+
       <div className="user-section">
-        <p className="user-name">{user?.username}</p>
-        <p className="user-role">{user?.role === 1 ? 'ADMINISTRADOR' : 'ANALISTA LVL 3'}</p>
-        <button onClick={onLogout} className="btn-logout-sidebar">DESCONECTAR</button>
+        {!isCollapsed && <p className="user-name">{user?.username}</p>}
+        {!isCollapsed && <p className="user-role">{user?.role === 1 ? 'ADMIN' : 'LVL 3'}</p>}
+        <button onClick={onLogout} className="btn-logout-sidebar">
+          {isCollapsed ? '⏻' : 'DESCONECTAR'}
+        </button>
       </div>
     </aside>
   );
