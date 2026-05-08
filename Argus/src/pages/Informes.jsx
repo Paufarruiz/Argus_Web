@@ -11,7 +11,7 @@ export default function Informes({ user }) {
     const fetchAllHallazgos = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost/api/Api_Argus.php?action=getHallazgosParaInforme`);
+        const response = await fetch(`/api/Api_Argus.php?action=getHallazgosParaInforme`);
         const data = await response.json();
         setHallazgos(Array.isArray(data) ? data : []);
       } catch (error) {

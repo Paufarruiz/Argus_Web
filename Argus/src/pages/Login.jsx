@@ -16,7 +16,7 @@ export default function Login({ onLogin }) {
     };
 
     try {
-      const response = await fetch('http://localhost/api/Api_Argus.php?action=login', {
+      const response = await fetch('/api/Api_Argus.php?action=login', {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',

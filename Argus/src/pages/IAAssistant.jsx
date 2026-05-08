@@ -11,7 +11,7 @@ export default function IAAssistant({ user }) {
     setRespuesta(""); 
 
     try {
-      const res = await fetch('http://localhost/api/Api_Argus.php?action=askIA', {
+      const res = await fetch('/api/Api_Argus.php?action=askIA', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

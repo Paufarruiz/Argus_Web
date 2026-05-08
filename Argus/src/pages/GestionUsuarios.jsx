@@ -15,9 +15,9 @@ export default function GestionUsuarios({ user }) {
   const fetchData = async () => {
     setRefreshing(true);
     try {
-      const resU = await fetch('http://localhost/api/Api_Argus.php?action=getUsuariosAnalistas');
-      const resC = await fetch('http://localhost/api/Api_Argus.php?action=getClientes&role=1');
-      const resA = await fetch('http://localhost/api/Api_Argus.php?action=getAsignaciones');
+      const resU = await fetch('/api/Api_Argus.php?action=getUsuariosAnalistas');
+      const resC = await fetch('/api/Api_Argus.php?action=getClientes&role=1');
+      const resA = await fetch('/api/Api_Argus.php?action=getAsignaciones');
       
       setAnalistas(await resU.json());
       setClientes(await resC.json());
@@ -32,7 +32,7 @@ export default function GestionUsuarios({ user }) {
   const handleAsignar = async () => {
     if (!selectedUser || !selectedCliente) return alert("Seleccione ambos campos");
 
-    const response = await fetch('http://localhost/api/Api_Argus.php?action=asignarCliente', {
+    const response = await fetch('/api/Api_Argus.php?action=asignarCliente', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ usuario_id: selectedUser, cliente_id: selectedCliente })
@@ -48,7 +48,7 @@ export default function GestionUsuarios({ user }) {
 
   const handleEliminar = async (uId, cId) => {
     if (window.confirm("¿Revocar acceso de este analista a la empresa?")) {
-      await fetch(`http://localhost/api/Api_Argus.php?action=eliminarAsignacion&user_id=${uId}&cliente_id=${cId}`);
+      await fetch(`/api/Api_Argus.php?action=eliminarAsignacion&user_id=${uId}&cliente_id=${cId}`);
       fetchData();
     }
   };

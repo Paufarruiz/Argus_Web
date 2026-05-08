@@ -53,7 +53,7 @@ export default function Dashboard({ user }) {
 
   const fetchHallazgos = async () => {
     try {
-      const response = await fetch(`http://localhost/api/Api_Argus.php?action=getHallazgos&user_id=${user.id}&role=${user.role}`);
+      const response = await fetch(`/api/Api_Argus.php?action=getHallazgos&user_id=${user.id}&role=${user.role}`);
       const data = await response.json();
       
       setHallazgos(Array.isArray(data) ? data : []);
@@ -87,7 +87,7 @@ export default function Dashboard({ user }) {
   // 3. Auditorías
   const registrarAuditoriaEnLog = async (hallazgoId) => {
     try {
-      await fetch('http://localhost/api/Api_Argus.php?action=registrarAuditoria', {
+      await fetch('/api/Api_Argus.php?action=registrarAuditoria', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -114,7 +114,7 @@ export default function Dashboard({ user }) {
   const handleToggleEstado = async (id, estadoActual) => {
     const nuevoEstado = estadoActual === 'Resuelto' ? 'Pendiente' : 'Resuelto';
     try {
-      const response = await fetch('http://localhost/api/Api_Argus.php?action=actualizarEstadoHallazgo', {
+      const response = await fetch('/api/Api_Argus.php?action=actualizarEstadoHallazgo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: id, estado: nuevoEstado })
