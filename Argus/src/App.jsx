@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar';
 import ModalLegal from './components/ModalLegal'; 
 import TicketsScreen from './pages/Tickets';
 import Informe from './pages/Informes';
+import ScraperManager from './pages/ScraperManager';
 import './App.css';
 
 export default function App() {
@@ -49,6 +50,7 @@ export default function App() {
               {currentScreen === 'IA' && <IAAssistantScreen user={userData} />}
               {currentScreen === 'TICKETS' && <TicketsScreen user={userData} />}
               {currentScreen === 'INFORME' && <Informe user={userData} />}
+              {currentScreen === 'ScraperManager' && <ScraperManager user={userData} />}
             </div>
 
             {/* --- PIE DE PÁGINA TÁCTICO (FOOTER) --- */}

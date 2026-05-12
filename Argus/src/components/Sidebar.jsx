@@ -73,6 +73,14 @@ export default function Sidebar({ user, onNavigate, onLogout, currentScreen }) {
           <span className="nav-icon">📉</span>
           {!isCollapsed && <span className="nav-text">EXPORTAR INFORMES</span>}
         </div>
+        <div 
+          className={`nav-item ${currentScreen === 'ScraperManager' ? 'active' : ''}`} 
+          onClick={() => onNavigate('ScraperManager')}
+          title="Scraper Manager"
+        >
+          <span className="nav-icon">📉</span>
+          {!isCollapsed && <span className="nav-text">ScraperManager</span>}
+        </div>
       </nav>
 
       <div className="user-section">
