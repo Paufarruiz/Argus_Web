@@ -153,6 +153,18 @@ export default function Dashboard({ user }) {
 
   const hallazgosSinTratar = Array.isArray(hallazgos) ? hallazgos.filter(h => h.estado !== 'Resuelto') : [];
 
+  // Calcular el score promedio para usarlo en la tarjeta y en la evaluación del color
+  const promedioScore = filteredHallazgos.length > 0 
+    ? Math.round(filteredHallazgos.reduce((acc, h) => acc + parseInt(h.score), 0) / filteredHallazgos.length) 
+    : 0;
+
+  // Evaluador de color condicional según requerimientos tácticos
+  const getLinkColor = (score) => {
+    if (score < 50) return '#00ff88'; // Verde
+    if (score >= 50 && score <= 80) return '#ffaa00'; // Amarillo
+    return '#dc2430'; // Rojo si supera el 80
+  };
+
   return (
     <>
       <header className="main-header">
@@ -243,12 +255,35 @@ export default function Dashboard({ user }) {
           <p>{filteredHallazgos.length}</p>
         </div>
         <div className="stat-box warning">
-          <h4>RIESGO CRÍTICO (&gt;80)</h4>
+          <h4>ALERTAS CRITICAS (&gt;80)</h4>
           <p>{filteredHallazgos.filter(h => h.score > 80).length}</p>
         </div>
-        <div className="stat-box info">
-          <h4>SCORE PROMEDIO</h4>
-          <p>{filteredHallazgos.length > 0 ? Math.round(filteredHallazgos.reduce((acc, h) => acc + parseInt(h.score), 0) / filteredHallazgos.length) : 0}%</p>
+        
+        {/* MODIFICADO: Tarjeta con layout Flexbox para acoplar la leyenda en columna a la derecha */}
+        <div className="stat-box info" style={{ display: 'flex', flexDirection: 'column' }}>
+          <h4>NIVEL DE RIESGO</h4>
+          <div style={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between', marginTop: '5px' }}>
+            {/* Porcentaje numérico */}
+            <p style={{ color: getLinkColor(promedioScore), transition: 'color 0.4s ease', margin: 0 }}>
+              {promedioScore}%
+            </p>
+            
+            {/* Nueva Leyenda en Columna */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'left', borderLeft: '1px solid #333', paddingLeft: '15px', fontSize: '0.65rem', fontWeight: 'bold' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#dc2430' }}></span>
+                <span style={{ color: '#dc2430', letterSpacing: '0.5px' }}>ALTO (&gt;80)</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ffaa00' }}></span>
+                <span style={{ color: '#ffaa00', letterSpacing: '0.5px' }}>MEDIO (50-80)</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#00ff88' }}></span>
+                <span style={{ color: '#00ff88', letterSpacing: '0.5px' }}>BAJO (&lt;50)</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
