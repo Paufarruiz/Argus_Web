@@ -78,8 +78,8 @@ export default function Sidebar({ user, onNavigate, onLogout, currentScreen }) {
           onClick={() => onNavigate('ScraperManager')}
           title="Scraper Manager"
         >
-          <span className="nav-icon">📉</span>
-          {!isCollapsed && <span className="nav-text">ScraperManager</span>}
+          <span className="nav-icon">⚙️</span>
+          {!isCollapsed && <span className="nav-text">SCRAPERS</span>}
         </div>
       </nav>
 

@@ -49,7 +49,7 @@ export default function Tickets({ user }) {
   const fetchTickets = async () => {
     setRefreshing(true);
     try {
-      const res = await fetch(`http://localhost/api/Api_Argus.php?action=getTickets&user_id=${user.id}&role=${user.role}`);
+      const res = await fetch(`/api/Api_Argus.php?action=getTickets&user_id=${user.id}&role=${user.role}`);
       const data = await res.json();
       setTickets(Array.isArray(data) ? data : []);
     } catch (e) {
@@ -61,7 +61,7 @@ export default function Tickets({ user }) {
 
   const fetchClientesAsignados = async () => {
     try {
-      const res = await fetch(`http://localhost/api/Api_Argus.php?action=getClientes&user_id=${user.id}&role=${user.role}`);
+      const res = await fetch(`/api/Api_Argus.php?action=getClientes&user_id=${user.id}&role=${user.role}`);
       const data = await res.json();
       setClientesPermitidos(Array.isArray(data) ? data : []);
     } catch (e) {
@@ -71,7 +71,7 @@ export default function Tickets({ user }) {
 
   const fetchHiloMensajes = async (ticketId) => {
     try {
-      const res = await fetch(`http://localhost/api/Api_Argus.php?action=getHiloMensajes&ticket_id=${ticketId}`);
+      const res = await fetch(`/api/Api_Argus.php?action=getHiloMensajes&ticket_id=${ticketId}`);
       const data = await res.json();
       setHiloMensajes(Array.isArray(data) ? data : []);
       localStorage.setItem(`ticket_visto_${ticketId}`, 'true'); // Marca como visto
@@ -82,7 +82,7 @@ export default function Tickets({ user }) {
 
   const fetchHiloMensajesSilencioso = async (ticketId) => {
     try {
-      const res = await fetch(`http://localhost/api/Api_Argus.php?action=getHiloMensajes&ticket_id=${ticketId}`);
+      const res = await fetch(`/api/Api_Argus.php?action=getHiloMensajes&ticket_id=${ticketId}`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setHiloMensajes(data);
@@ -108,7 +108,7 @@ export default function Tickets({ user }) {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost/api/Api_Argus.php?action=crearTicket', {
+      const response = await fetch('/api/Api_Argus.php?action=crearTicket', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -138,7 +138,7 @@ export default function Tickets({ user }) {
 
   const handleActualizarEstado = async (id, nuevoEstado) => {
     try {
-      const response = await fetch('http://localhost/api/Api_Argus.php?action=actualizarEstadoTicket', {
+      const response = await fetch('/api/Api_Argus.php?action=actualizarEstadoTicket', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: id, estado: nuevoEstado })
@@ -168,7 +168,7 @@ export default function Tickets({ user }) {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost/api/Api_Argus.php?action=enviarMensaje', {
+      const response = await fetch('/api/Api_Argus.php?action=enviarMensaje', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

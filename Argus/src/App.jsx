@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LoginScreen from './pages/Login';
 import DashboardScreen from './pages/Dashboard';
 import ClientesScreen from './pages/Clientes';
@@ -12,18 +12,44 @@ import ScraperManager from './pages/ScraperManager';
 import './App.css';
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState('LOGIN');
-  const [userData, setUserData] = useState(null);
-  const [isLegalOpen, setIsLegalOpen] = useState(false); // Estado para el Modal
+  // 1. Inicialización inteligente: revisa si hay datos guardados antes del primer renderizado
+  const [userData, setUserData] = useState(() => {
+    const sessionUser = localStorage.getItem('argus_user_data');
+    return sessionUser ? JSON.parse(sessionUser) : null;
+  });
 
+  const [currentScreen, setCurrentScreen] = useState(() => {
+    const sessionScreen = localStorage.getItem('argus_current_screen');
+    // Si hay usuario guardado pero la pantalla se quedó en LOGIN por error, forzamos DASHBOARD
+    if (sessionScreen === 'LOGIN' && localStorage.getItem('argus_user_data')) {
+      return 'DASHBOARD';
+    }
+    return sessionScreen || 'LOGIN';
+  });
+
+  const [isLegalOpen, setIsLegalOpen] = useState(false);
+
+  // 2. Efecto para recordar la pantalla actual si el usuario navega dentro de la app
+  useEffect(() => {
+    if (userData) {
+      localStorage.setItem('argus_current_screen', currentScreen);
+    }
+  }, [currentScreen, userData]);
+
+  // Al iniciar sesión con éxito, guardamos todo en el almacenamiento del navegador
   const handleLoginSuccess = (user) => {
     setUserData(user);
     setCurrentScreen('DASHBOARD');
+    localStorage.setItem('argus_user_data', JSON.stringify(user));
+    localStorage.setItem('argus_current_screen', 'DASHBOARD');
   };
 
+  // Al cerrar sesión, limpiamos el almacenamiento por completo
   const handleLogout = () => {
     setUserData(null);
     setCurrentScreen('LOGIN');
+    localStorage.removeItem('argus_user_data');
+    localStorage.removeItem('argus_current_screen');
   };
 
   return (
@@ -65,7 +91,6 @@ export default function App() {
                   PROPIEDAD DE ARGUS INTELLIGENCE — USO ESTRICTAMENTE DEFENSIVO
                 </div>
                 <div className="footer-right">
-                  {/* Al hacer clic, activamos el Modal */}
                   <span className="legal-link" onClick={() => setIsLegalOpen(true)}>AVISO LEGAL</span>
                   <span className="legal-link">PRIVACIDAD</span>
                 </div>
@@ -73,7 +98,7 @@ export default function App() {
             </footer>
           </main>
 
-          {/* COMPONENTE MODAL (Solo se ve cuando isLegalOpen es true) */}
+          {/* COMPONENTE MODAL */}
           <ModalLegal 
             isOpen={isLegalOpen} 
             onClose={() => setIsLegalOpen(false)} 

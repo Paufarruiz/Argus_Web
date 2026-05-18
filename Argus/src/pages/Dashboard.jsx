@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Legend } from 'recharts';
 
 export default function Dashboard({ user }) {
   const [hallazgos, setHallazgos] = useState([]);
@@ -16,6 +16,26 @@ export default function Dashboard({ user }) {
   const tiposValidos = [
     "CREDENTIAL_LEAK", "SOURCE_CODE_EXPOSURE", "THREAT_INTELLIGENCE_MENTION", "BRAND_IMPERSONATION", "GENERAL_MENTION"
   ];
+
+  // Colores para los nuevos gráficos que combinan con tu tema Cyberpunk / Argus
+  const COLORS_ESTADO = {
+    Pendiente: '#ffaa00',
+    Resuelto: '#00ff88'
+  };
+
+  const COLORS_AMENAZAS = ['#7b4397', '#dc2430', '#00ff88', '#ffaa00', '#2E75B6'];
+
+  // Procesamiento de datos para los nuevos gráficos
+  const datosAmenazas = tiposValidos.map((tipo, index) => ({
+    name: tipo.replace(/_/g, ' '),
+    cantidad: filteredHallazgos.filter(h => h.amenaza === tipo).length,
+    color: COLORS_AMENAZAS[index % COLORS_AMENAZAS.length]
+  })).filter(item => item.cantidad > 0);
+
+  const datosEstados = [
+    { name: 'Pendiente', value: filteredHallazgos.filter(h => h.estado !== 'Resuelto').length },
+    { name: 'Resuelto', value: filteredHallazgos.filter(h => h.estado === 'Resuelto').length }
+  ].filter(item => item.value > 0);
 
   // 1. Carga en tiempo real cada 3 segundos
   useEffect(() => {
@@ -53,7 +73,7 @@ export default function Dashboard({ user }) {
 
   const fetchHallazgos = async () => {
     try {
-      const response = await fetch(`http://localhost/api/Api_Argus.php?action=getHallazgos&user_id=${user.id}&role=${user.role}`);
+      const response = await fetch(`/api/Api_Argus.php?action=getHallazgos&user_id=${user.id}&role=${user.role}`);
       const data = await response.json();
       
       setHallazgos(Array.isArray(data) ? data : []);
@@ -61,7 +81,7 @@ export default function Dashboard({ user }) {
     } catch (error) {
       console.error("Error en la visualización en tiempo real:", error);
     } finally {
-      setLoading(false);
+      loading && setLoading(false);
     }
   };
 
@@ -87,7 +107,7 @@ export default function Dashboard({ user }) {
   // 3. Auditorías
   const registrarAuditoriaEnLog = async (hallazgoId) => {
     try {
-      await fetch('http://localhost/api/Api_Argus.php?action=registrarAuditoria', {
+      await fetch('/api/Api_Argus.php?action=registrarAuditoria', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -114,7 +134,7 @@ export default function Dashboard({ user }) {
   const handleToggleEstado = async (id, estadoActual) => {
     const nuevoEstado = estadoActual === 'Resuelto' ? 'Pendiente' : 'Resuelto';
     try {
-      const response = await fetch('http://localhost/api/Api_Argus.php?action=actualizarEstadoHallazgo', {
+      const response = await fetch('/api/Api_Argus.php?action=actualizarEstadoHallazgo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: id, estado: nuevoEstado })
@@ -146,8 +166,12 @@ export default function Dashboard({ user }) {
         </div>
       </header>
 
-      <section className="chart-section">
-        <div className="chart-container">
+      {/* SECCIÓN DE GRÁFICOS EXTENDIDA */}
+      <section className="chart-section" style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '20px' }}>
+        
+        {/* 1. Histórico Temporal */}
+        <div className="chart-container" style={{ width: '100%' }}>
+          <h5 style={{ color: '#888', fontSize: '0.75rem', marginBottom: '10px', textTransform: 'uppercase' }}>Historial de Incidencias</h5>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={chartData}>
               <defs>
@@ -163,6 +187,53 @@ export default function Dashboard({ user }) {
               <Area type="monotone" dataKey="cantidad" stroke="#7b4397" fillOpacity={1} fill="url(#colorValue)" />
             </AreaChart>
           </ResponsiveContainer>
+        </div>
+
+        {/* Sub-contenedor para los gráficos inferiores colocados debajo */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', width: '100%' }}>
+          
+          {/* 2. Distribución por Tipo de Amenaza (Letras en blanco y caja agrandada) */}
+          <div className="chart-container" style={{ flex: '1 1 350px', minHeight: '310px', backgroundColor: '#151518', padding: '15px', borderRadius: '4px', border: '1px solid #222' }}>
+            <h5 style={{ color: '#888', fontSize: '0.75rem', marginBottom: '10px', textTransform: 'uppercase' }}>Tipos de Amenazas Activas</h5>
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={datosAmenazas} layout="vertical" margin={{ left: -5, right: 15, top: 5, bottom: 5 }}>
+                <CartesianGrid stroke="#222" horizontal={false} strokeDasharray="3 3"/>
+                <XAxis type="number" stroke="#ffffff" fontSize={10} tickLine={false} tick={{ fill: '#ffffff' }} />
+                <YAxis dataKey="name" type="category" stroke="#ffffff" fontSize={9} width={95} tickLine={false} tick={{ fill: '#ffffff' }} />
+                <Tooltip contentStyle={{ backgroundColor: '#101014', border: '1px solid #333', fontSize: '10px', color: '#ffffff' }} />
+                <Bar dataKey="cantidad" radius={[0, 4, 4, 0]}>
+                  {datosAmenazas.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* 3. Distribución por Estado (Caja agrandada) */}
+          <div className="chart-container" style={{ flex: '1 1 280px', minHeight: '310px', backgroundColor: '#151518', padding: '15px', borderRadius: '4px', border: '1px solid #222' }}>
+            <h5 style={{ color: '#888', fontSize: '0.75rem', marginBottom: '10px', textTransform: 'uppercase' }}>Resolución (Estados)</h5>
+            <ResponsiveContainer width="100%" height={260}>
+              <PieChart>
+                <Pie
+                  data={datosEstados}
+                  cx="50%"
+                  cy="42%"
+                  innerRadius={50}
+                  outerRadius={75}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {datosEstados.map((entry) => (
+                    <Cell key={`cell-${entry.name}`} fill={COLORS_ESTADO[entry.name] || '#7b4397'} />
+                  ))}
+                </Pie>
+                <Tooltip contentStyle={{ backgroundColor: '#101014', border: '1px solid #333', fontSize: '10px' }} />
+                <Legend verticalAlign="bottom" iconSize={9} wrapperStyle={{ fontSize: '10px', color: '#ffffff', paddingTop: '10px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
         </div>
       </section>
 

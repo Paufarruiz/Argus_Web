@@ -14,7 +14,7 @@ export default function Clientes({ user }) {
   const fetchClientes = async () => {
     try {
       // Usamos los datos del usuario pasados por props desde App.jsx
-      const res = await fetch(`http://localhost/api/Api_Argus.php?action=getClientes&user_id=${user.id}&role=${user.role}`);
+      const res = await fetch(`/api/Api_Argus.php?action=getClientes&user_id=${user.id}&role=${user.role}`);
       const data = await res.json();
       setClientes(data);
     } catch (error) {
@@ -27,7 +27,7 @@ export default function Clientes({ user }) {
     const action = editingId ? 'updateCliente' : 'addCliente';
     const payload = editingId ? { ...formData, id: editingId } : formData;
 
-    await fetch(`http://localhost/api/Api_Argus.php?action=${action}`, {
+    await fetch(`/api/Api_Argus.php?action=${action}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -39,7 +39,7 @@ export default function Clientes({ user }) {
 
   const handleDelete = async (id) => {
     if (window.confirm("¿CONFIRMAR ELIMINACIÓN TÁCTICA?")) {
-      await fetch(`http://localhost/api/Api_Argus.php?action=deleteCliente&id=${id}`);
+      await fetch(`/api/Api_Argus.php?action=deleteCliente&id=${id}`);
       fetchClientes();
     }
   };

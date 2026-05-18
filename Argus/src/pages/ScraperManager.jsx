@@ -19,12 +19,12 @@ export default function ScraperManager({ user }) {
 
     try {
       // 1. Cargar lista de clientes autorizados para el selector
-      const resC = await fetch(`http://localhost/api/Api_Argus.php?action=getClientes&user_id=${user.id}&role=${user.role}`);
+      const resC = await fetch(`/api/Api_Argus.php?action=getClientes&user_id=${user.id}&role=${user.role}`);
       const dataC = await resC.json();
       setClientes(Array.isArray(dataC) ? dataC : []);
 
       // 2. Cargar Nodos Activos (Scripts en C:\Scripts)
-      const resS = await fetch(`http://localhost/api/Api_Argus.php?action=getStatusScraper&user_id=${user.id}&role=${user.role}`);
+      const resS = await fetch(`/api/Api_Argus.php?action=getStatusScraper&user_id=${user.id}&role=${user.role}`);
       
       // Técnica de depuración: Leer como texto primero
       const text = await resS.text();
@@ -46,7 +46,7 @@ export default function ScraperManager({ user }) {
     if (!selectedCompany) return alert("⚠️ Selecciona una empresa objetivo antes de desplegar.");
     
     try {
-      const res = await fetch('http://localhost/api/Api_Argus.php?action=startScraper', {
+      const res = await fetch('/api/Api_Argus.php?action=startScraper', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ modo: modo, companyName: selectedCompany })
@@ -70,7 +70,7 @@ export default function ScraperManager({ user }) {
     if (!window.confirm(`¿Estás seguro de detener los hilos de ejecución y ELIMINAR los archivos de ${selectedCompany}?`)) return;
 
     try {
-      const res = await fetch('http://localhost/api/Api_Argus.php?action=stopScraper', {
+      const res = await fetch('/api/Api_Argus.php?action=stopScraper', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ companyName: selectedCompany })

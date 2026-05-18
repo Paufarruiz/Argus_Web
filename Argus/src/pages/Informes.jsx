@@ -11,7 +11,7 @@ export default function Informes({ user }) {
     const fetchAllHallazgos = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost/api/Api_Argus.php?action=getHallazgosParaInforme`);
+        const response = await fetch(`/api/Api_Argus.php?action=getHallazgosParaInforme`);
         const data = await response.json();
         setHallazgos(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -33,136 +33,101 @@ export default function Informes({ user }) {
     return matchCliente && matchFuente && matchEstado;
   });
 
-  // Generación de un PDF estructurado (simulado de alto nivel)
+  // NUEVA FUNCIÓN DE EXPORTACIÓN ESTRUCTURADA
   const exportarPDF = () => {
     const win = window.open('', '_blank');
+    const fecha = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    const scoreColor = (s) => s >= 90 ? '#C0392B' : s >= 60 ? '#D35400' : '#1E8449';
+    const scoreBg    = (s) => s >= 90 ? '#FADBD8' : s >= 60 ? '#FDEBD0' : '#D5F5E3';
+    const estadoBg   = (e) => e === 'Resuelto' ? '#D5F5E3' : '#FDEBD0';
+    const estadoFg   = (e) => e === 'Resuelto' ? '#1E8449' : '#D35400';
+
+    const total      = hallazgosFiltrados.length;
+    const criticos   = hallazgosFiltrados.filter(h => h.score >= 90).length;
+    const pendientes = hallazgosFiltrados.filter(h => h.estado === 'Pendiente').length;
+    const resueltos  = hallazgosFiltrados.filter(h => h.estado === 'Resuelto').length;
+
     win.document.write(`
-      <html>
-      <head>
-        <title>Informe de Incidencias - Argus Intelligence</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            color: #ffffff;
-            background-color: #0e0e12;
-            padding: 30px;
-            line-height: 1.4;
-          }
-          .header {
-            border-bottom: 2px solid #7b4397;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-          }
-          h1 {
-            color: #7b4397;
-            font-size: 22px;
-            margin: 0 0 5px 0;
-            text-transform: uppercase;
-          }
-          .subtitle {
-            color: #00ff88;
-            font-size: 11px;
-            text-transform: uppercase;
-          }
-          .meta-info {
-            margin-top: 15px;
-            font-size: 10px;
-            color: #888;
-          }
-          .card {
-            background-color: #151518;
-            border: 1px solid #2a2a32;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 25px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 11px;
-          }
-          th {
-            background-color: #1c1c24;
-            color: #7b4397;
-            text-align: left;
-            padding: 8px;
-            border-bottom: 1px solid #333;
-            text-transform: uppercase;
-          }
-          td {
-            padding: 8px;
-            border-bottom: 1px solid #1c1c24;
-            color: #ccc;
-          }
-          .badge {
-            padding: 3px 6px;
-            border-radius: 3px;
-            font-size: 9px;
-            text-transform: uppercase;
-            font-weight: bold;
-          }
-          .badge.credential_leak { background-color: #dc2430; color: #fff; }
-          .badge.source_code_exposure { background-color: #ffaa00; color: #000; }
-          .badge.general_mention { background-color: #7b4397; color: #fff; }
-          .footer {
-            margin-top: 50px;
-            border-top: 1px solid #222;
-            padding-top: 15px;
-            font-size: 9px;
-            color: #666;
-            text-align: center;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1>Informe Ejecutivo de Seguridad</h1>
-          <div class="subtitle">ARGUS INTELLIGENCE — USO CONFID 3290</div>
-          <div class="meta-info">
-            Fecha: ${new Date().toLocaleDateString('es-ES')} | Usuario: Analista Nivel 3 | Estado: Confidencial
-          </div>
-        </div>
+      <html><head>
+      <title>Informe Argus Intelligence</title>
+      <style>
+        @page { margin: 20mm 18mm; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; color: #2c2c2c; background: #fff; font-size: 10px; }
+        .cover { background: #1A2B4A; color: white; padding: 28px 32px 24px; margin-bottom: 28px; }
+        .cover h1 { font-size: 22px; font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; }
+        .cover .sub { color: #A8C4E0; font-size: 11px; margin-bottom: 16px; }
+        .cover .meta { font-size: 9.5px; color: #ccc; }
+        .cover .meta span { color: #FF9494; font-weight: bold; }
+        .kpis { display: flex; gap: 12px; margin-bottom: 24px; }
+        .kpi { flex: 1; border: 1px solid #D5D8DC; border-radius: 3px; padding: 12px; text-align: center; }
+        .kpi .val { font-size: 24px; font-weight: 800; }
+        .kpi .lbl { font-size: 8.5px; color: #5D6D7E; margin-top: 3px; text-transform: uppercase; letter-spacing: .5px; }
+        h2 { color: #1A2B4A; font-size: 12px; border-bottom: 2.5px solid #2E75B6; padding-bottom: 5px; margin: 20px 0 10px; text-transform: uppercase; letter-spacing: .5px; }
+        p { font-size: 9.5px; line-height: 1.6; margin-bottom: 8px; color: #444; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 9px; }
+        th { background: #1A2B4A; color: white; padding: 7px 8px; text-align: center; font-size: 8.5px; letter-spacing: .4px; }
+        td { padding: 6px 8px; border-bottom: 1px solid #E0E0E0; }
+        tr:nth-child(even) td { background: #F2F5F8; }
+        .id { font-weight: 700; color: #2C3E6B; text-align: center; }
+        .score, .estado { text-align: center; font-weight: 700; border-radius: 3px; padding: 2px 5px; }
+        .footer-note { border-top: 1px solid #ccc; padding-top: 8px; margin-top: 24px; font-size: 8px; color: #888; text-align: center; }
+      </style></head><body>
 
-        <div class="card">
-          <p><strong>Total de registros exportados:</strong> ${hallazgosFiltrados.length}</p>
+      <div class="cover">
+        <h1>INFORME EJECUTIVO DE SEGURIDAD</h1>
+        <div class="sub">Argus Intelligence · Inteligencia de Amenazas y Seguridad Digital</div>
+        <div class="meta">
+          Fecha de emisión: ${fecha} &nbsp;|&nbsp;
+          Clasificación: <span>CONFIDENCIAL</span> &nbsp;|&nbsp;
+          Registros exportados: ${total}
         </div>
+      </div>
 
-        <table>
-          <thead>
+      <div class="kpis">
+        <div class="kpi" style="background:#D6E4F0">
+          <div class="val" style="color:#1A2B4A">${total}</div>
+          <div class="lbl">Total Incidencias</div>
+        </div>
+        <div class="kpi" style="background:#FADBD8">
+          <div class="val" style="color:#C0392B">${criticos}</div>
+          <div class="lbl">Críticos (≥90%)</div>
+        </div>
+        <div class="kpi" style="background:#FDEBD0">
+          <div class="val" style="color:#D35400">${pendientes}</div>
+          <div class="lbl">Pendientes</div>
+        </div>
+        <div class="kpi" style="background:#D5F5E3">
+          <div class="val" style="color:#1E8449">${resueltos}</div>
+          <div class="lbl">Resueltos</div>
+        </div>
+      </div>
+
+      <h2>Detalle de Incidencias</h2>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>CLIENTE</th><th>FUENTE</th><th>AMENAZA</th><th>SCORE</th><th>ESTADO</th><th>FECHA</th></tr>
+        </thead>
+        <tbody>
+          ${hallazgosFiltrados.map(h => `
             <tr>
-              <th>ID</th>
-              <th>CLIENTE</th>
-              <th>FUENTE</th>
-              <th>AMENAZA</th>
-              <th>SCORE</th>
-              <th>ESTADO</th>
-              <th>FECHA</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${hallazgosFiltrados.map(h => `
-              <tr>
-                <td>#${h.id}</td>
-                <td>${h.cliente_nombre}</td>
-                <td>${h.fuente}</td>
-                <td>${h.amenaza}</td>
-                <td style="color: ${h.score > 80 ? '#dc2430' : '#00ff88'};">${h.score}%</td>
-                <td>${h.estado}</td>
-                <td>${new Date(h.fecha_registro).toLocaleString()}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
+              <td class="id">#${h.id}</td>
+              <td>${h.cliente_nombre}</td>
+              <td style="text-align:center">${h.fuente}</td>
+              <td>${h.amenaza.replace(/_/g,' ')}</td>
+              <td class="score" style="background:${scoreBg(h.score)};color:${scoreColor(h.score)}">${h.score}%</td>
+              <td class="estado" style="background:${estadoBg(h.estado)};color:${estadoFg(h.estado)}">${h.estado}</td>
+              <td>${new Date(h.fecha_registro).toLocaleString('es-ES')}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
 
-        <div class="footer">
-          Argus Intelligence &copy; 2026. Sistema de seguridad defensiva.
-        </div>
-      </body>
-      </html>
+      <div class="footer-note">Argus Intelligence © 2026 · Sistema de seguridad defensiva · USO CONFID 3290</div>
+      </body></html>
     `);
     win.document.close();
-    win.print(); // Abre el cuadro de diálogo PDF nativo del sistema
+    win.print();
   };
 
   return (
